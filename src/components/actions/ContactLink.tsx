@@ -6,7 +6,7 @@ export function ContactLink() {
   return (
     <a
       className="btn btn-primary"
-      href="mailto:hello@metric-atlas.dev"
+      href="mailto:limgh2002@gmail.com"
       onClick={() =>
         gtag("event", "contact_click", { method: "email", location: "hero" })
       }
