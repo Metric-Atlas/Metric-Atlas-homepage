@@ -24,6 +24,7 @@ export function initGoogleAnalytics() {
     window.dataLayer.push(args);
   };
 
+  gtag("consent", "default", { analytics_storage: "granted" });
   gtag("js", new Date());
   gtag("config", GA_MEASUREMENT_ID ?? "G-DEMOMODE", {
     send_page_view: Boolean(GA_MEASUREMENT_ID),
