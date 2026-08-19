@@ -50,3 +50,35 @@ cp .env.example .env
 > 별도로 설정해야 합니다. Mixpanel은 GA4 Data API 대상이 아니므로 Health 대조에는
 > 사용되지 않습니다 — 이 프로젝트에서는 "GA4 MVP 패턴 vs. 아직 미지원인 Provider"를
 > 비교 테스트하기 위한 용도로만 포함했습니다.
+
+## Metric Atlas 연동 (시연)
+
+패키지가 npm에 publish되기 전까지는 형제 디렉토리의 모노레포 빌드 산출물을 사용합니다.
+`METRIC_ATLAS_ENABLED=true`일 때만 활성화되며 **평소 빌드에는 영향이 없습니다.**
+
+```bash
+# 0) 선행: 형제 디렉토리에 모노레포 클론 + 빌드 (1회)
+#    <parent>/Metric-Atlas-homepage  ← 이 repo
+#    <parent>/Metric-Atlas           ← 모노레포
+cd ../Metric-Atlas && pnpm install && pnpm build && cd -
+
+# 1) Metric Atlas를 켜서 빌드 → dist + .metric-atlas/manifest.json + data-atlas-id 주입
+METRIC_ATLAS_ENABLED=true npm run build
+
+# 2) Runtime으로 서빙 (GA4 env가 있으면 /api/health가 실측 반환)
+#    credential 설정은 모노레포 .env.metric-atlas.example 참고
+node ../Metric-Atlas/packages/cli/dist/bin.js serve ./dist --port 8787
+# → http://127.0.0.1:8787 (홈페이지 + Overlay 런처)
+
+# 3) Dashboard (모노레포에서)
+METRIC_ATLAS_RUNTIME_ORIGIN=http://127.0.0.1:8787 pnpm --filter @metric-atlas/demo-react-vite dev
+# → http://localhost:5180
+```
+
+모노레포가 다른 경로에 있다면 `METRIC_ATLAS_PLUGIN_PATH`로 플러그인 산출물 경로를 지정합니다.
+
+```bash
+METRIC_ATLAS_ENABLED=true METRIC_ATLAS_PLUGIN_PATH=/path/to/Metric-Atlas/packages/vite/dist/index.js npm run build
+```
+
+> npm publish 이후에는 이 동적 로드 대신 `@metric-atlas/vite` devDependency 설치로 전환합니다 (Phase 6 OSS Release에서 결정).
