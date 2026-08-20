@@ -1,0 +1,33 @@
+{
+  "name": "@metric-atlas/vite",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty false"
+  },
+  "dependencies": {
+    "@metric-atlas/contracts": "file:../contracts",
+    "@metric-atlas/detector": "file:../detector",
+    "@metric-atlas/overlay": "file:../overlay",
+    "minimatch": "^10.2.6"
+  },
+  "peerDependencies": {
+    "vite": ">=6.0.0 <9.0.0"
+  },
+  "devDependencies": {
+    "vite": "^8.2.1"
+  }
+}
