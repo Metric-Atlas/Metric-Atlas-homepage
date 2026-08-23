@@ -7,7 +7,15 @@ import react from '@vitejs/plugin-react'
 async function metricAtlasPlugin(): Promise<PluginOption[]> {
   if (process.env.METRIC_ATLAS_ENABLED !== 'true') return []
   const { default: metricAtlas } = await import('@metric-atlas/vite')
-  return [metricAtlas({ enabled: true, overlay: { enabled: true } })]
+  // mixpanel은 기본 비활성 어댑터(DEC-037) — PrButton의 mixpanel.track()을
+  // 잡으려면 명시적으로 켜야 한다.
+  return [
+    metricAtlas({
+      enabled: true,
+      overlay: { enabled: true },
+      detectors: ['ga4', 'gtm', 'mixpanel'],
+    }),
+  ]
 }
 
 // https://vite.dev/config/
